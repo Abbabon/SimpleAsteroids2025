@@ -1,37 +1,47 @@
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : Singleton<PlayerController>
 {
     private static readonly int Flying = Animator.StringToHash("Flying");
-    [SerializeField] private Rigidbody2D rigidbody;
     [SerializeField] private float thrustSpeed;
     [SerializeField] private float rotationSpeed;
+    
+    [SerializeField] private Bullet bulletPrefab;
+    
+    // TODO: make prefab
+    [SerializeField] private Ship ship;
 
-    [SerializeField] private AudioSource engineAudioSource;
-    [SerializeField] private Animator animator;
+    private BestObjectPool<Bullet> bulletPool;
     
     private bool _throttle;
     private Vector3 _rotationDirection;
+
+    private void Awake()
+    {
+        bulletPool = new BestObjectPool<Bullet>(bulletPrefab);
+    }
 
     private void Update()
     {
         HandleThrust();
         HandleRotation();
-
+        
         HandleEffects();
+
+        HandleBullets();
     }
 
     private void HandleEffects()
     {
-        if (_throttle && ! engineAudioSource.isPlaying)
+        if (_throttle && ! ship.EngineAudioSource.isPlaying)
         {
-            engineAudioSource.Play();
-            animator.SetBool(Flying, true);
+            ship.EngineAudioSource.Play();
+            ship.Animator.SetBool(Flying, true);
         }
-        else if (! _throttle && engineAudioSource.isPlaying)
+        else if (! _throttle && ship.EngineAudioSource.isPlaying)
         {
-            engineAudioSource.Stop();
-            animator.SetBool(Flying, false);
+            ship.EngineAudioSource.Stop();
+            ship.Animator.SetBool(Flying, false);
         }
     }
 
@@ -67,11 +77,31 @@ public class PlayerController : MonoBehaviour
     {
         if (_throttle)
         {
-            var forceVector = transform.up * thrustSpeed * Time.fixedDeltaTime;
-            rigidbody.AddForce(forceVector, ForceMode2D.Impulse);
+            var forceVector = ship.transform.up * thrustSpeed * Time.fixedDeltaTime;
+            ship.Rigidbody2D.AddForce(forceVector, ForceMode2D.Impulse);
         }
         
         var rotation = _rotationDirection * rotationSpeed * Time.fixedDeltaTime;
-        rigidbody.MoveRotation(rigidbody.rotation + rotation.z);
+        ship.Rigidbody2D.MoveRotation(ship.Rigidbody2D.rotation + rotation.z);
+    }
+    
+    private void HandleBullets()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            var newBullet = bulletPool.GetObject();
+            newBullet.transform.position = ship.transform.position;
+            var bulletDirection = ship.transform.up;
+            newBullet.Fire(bulletDirection);   
+        }
+    }
+    
+    public void ReturnBullet(Bullet bullet)
+    {
+        // TODO extension methods
+        bullet.Rigidbody.linearVelocity = Vector2.zero;
+        bullet.Rigidbody.angularVelocity = 0f;
+        
+        bulletPool.ReleaseObject(bullet);
     }
 }
