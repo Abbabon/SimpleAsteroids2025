@@ -1,25 +1,26 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Asteroid : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D rigidbody2D;
-    [SerializeField] private float forceMagnitude = 3f;
     [SerializeField] private SpriteRenderer spriteRenderer;
-    [SerializeField] private List<Sprite> sprites;
-
-    private void Awake()
+    
+    private float _startingSpeed;
+    private int _level;
+    
+    public void Setup(Sprite sprite, float startingSpeed, int level)
     {
-        spriteRenderer.sprite = sprites[Random.Range(0, sprites.Count)];
+        spriteRenderer.sprite = sprite;
+        _startingSpeed = startingSpeed;
+        _level = level;
     }
-
+    
     private void Start()
     {
         WarpManager.Instance.RegisterTransform(transform);
         
-        var force = Random.insideUnitCircle.normalized * forceMagnitude;
+        var force = Random.insideUnitCircle.normalized * _startingSpeed;
         rigidbody2D.AddForce(force);
     }
 
