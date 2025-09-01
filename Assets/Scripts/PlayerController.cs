@@ -7,22 +7,37 @@ public class PlayerController : Singleton<PlayerController>
     [SerializeField] private float rotationSpeed;
     
     [SerializeField] private Bullet bulletPrefab;
-    
-    // TODO: make prefab
     [SerializeField] private Ship ship;
 
     private BestObjectPool<Bullet> bulletPool;
     
     private bool _throttle;
     private Vector3 _rotationDirection;
+    private Vector3 _originalShipScale;
 
     private void Awake()
     {
         bulletPool = new BestObjectPool<Bullet>(bulletPrefab);
+        
+        // Cache original ship scale
+        if (ship != null)
+        {
+            _originalShipScale = ship.transform.localScale;
+        }
     }
 
     private void Update()
     {
+        // Handle restart input when game is over
+        if (GameManager.Instance.GameOver && Input.GetKeyDown(KeyCode.R))
+        {
+            GameManager.Instance.RestartGame();
+            return;
+        }
+        
+        if (!GameManager.Instance.PlayerAlive || GameManager.Instance.GameOver || !GameManager.Instance.GameStarted)
+            return;
+            
         HandleThrust();
         HandleRotation();
         
@@ -75,13 +90,16 @@ public class PlayerController : Singleton<PlayerController>
 
     private void FixedUpdate()
     {
+        if (!GameManager.Instance.PlayerAlive || GameManager.Instance.GameOver || !GameManager.Instance.GameStarted)
+            return;
+            
         if (_throttle)
         {
-            var forceVector = ship.transform.up * thrustSpeed * Time.fixedDeltaTime;
+            var forceVector = ship.transform.up * (thrustSpeed * Time.fixedDeltaTime);
             ship.Rigidbody2D.AddForce(forceVector, ForceMode2D.Impulse);
         }
         
-        var rotation = _rotationDirection * rotationSpeed * Time.fixedDeltaTime;
+        var rotation = _rotationDirection * (rotationSpeed * Time.fixedDeltaTime);
         ship.Rigidbody2D.MoveRotation(ship.Rigidbody2D.rotation + rotation.z);
     }
     
@@ -103,5 +121,39 @@ public class PlayerController : Singleton<PlayerController>
         bullet.Rigidbody.angularVelocity = 0f;
         
         bulletPool.ReleaseObject(bullet);
+    }
+    
+    public void DestroyShip()
+    {
+        ship.gameObject.SetActive(false);
+        
+        // Stop all movement and audio
+        ship.Rigidbody2D.linearVelocity = Vector2.zero;
+        ship.Rigidbody2D.angularVelocity = 0f;
+        ship.EngineAudioSource.Stop();
+        ship.Animator.SetBool(Flying, false);
+        
+        // Reset input state
+        _throttle = false;
+        _rotationDirection = Vector3.zero;
+    }
+    
+    public void RespawnShip()
+    {
+        // Reset ship position and rotation
+        ship.transform.position = Vector3.zero;
+        ship.transform.rotation = Quaternion.identity;
+        ship.transform.localScale = _originalShipScale;
+        
+        // Reset physics
+        ship.Rigidbody2D.linearVelocity = Vector2.zero;
+        ship.Rigidbody2D.angularVelocity = 0f;
+        
+        // Reset input state
+        _throttle = false;
+        _rotationDirection = Vector3.zero;
+        
+        // Reactivate ship
+        ship.gameObject.SetActive(true);
     }
 }

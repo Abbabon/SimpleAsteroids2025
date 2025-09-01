@@ -25,17 +25,30 @@ public class Asteroid : MonoBehaviour
 
     public void OnTriggerEnter2D(Collider2D other)
     {
-        var isPlayer = other.CompareTag(Constants.PlayerTag);
+        var isShip = other.CompareTag(Constants.ShipTag);
         var isBullet = other.CompareTag(Constants.BulletTag);
         
-        if (isPlayer)
+        if (isShip)
         {
-            
+            GameManager.Instance.OnShipHit();
         }
         else if (isBullet)
         {
+            var bullet = other.GetComponent<Bullet>();
+            if (bullet != null)
+            {
+                PlayerController.Instance.ReturnBullet(bullet);
+            }
             
+            GameManager.Instance.OnAsteroidDestroyed();
+            DestroyAsteroid();
         }
+    }
+    
+    private void DestroyAsteroid()
+    {
+        WarpManager.Instance.UnregisterTransform(transform);
+        Destroy(gameObject);
     }
 
     private void OnDestroy()
