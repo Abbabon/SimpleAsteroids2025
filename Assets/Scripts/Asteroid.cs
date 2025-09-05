@@ -34,7 +34,10 @@ public class Asteroid : MonoBehaviour
         
         if (isShip)
         {
+            _isDestroyed = true;
             GameManager.Instance.OnShipHit();
+            GameManager.Instance.OnAsteroidDestroyed(false); // No points for ship collision
+            DestroyAsteroid();
         }
         else if (isBullet)
         {
@@ -45,7 +48,7 @@ public class Asteroid : MonoBehaviour
                 PlayerController.Instance.ReturnBullet(bullet);
             }
             
-            GameManager.Instance.OnAsteroidDestroyed();
+            GameManager.Instance.OnAsteroidDestroyed(true); // Award points for bullet hit
             DestroyAsteroid();
         }
     }

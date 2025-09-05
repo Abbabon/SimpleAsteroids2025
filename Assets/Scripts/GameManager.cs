@@ -89,20 +89,23 @@ public class GameManager : Singleton<GameManager>
         RespawnPlayer();
     }
     
-    public void OnAsteroidDestroyed()
+    public void OnAsteroidDestroyed(bool awardPoints = true)
     {
         if (_gameOver || _gameWon || !_gameStarted) return;
         
-        _score += pointsPerAsteroid;
-        OnScoreChanged?.Invoke(_score);
-        
-        if (_score > _highScore)
+        if (awardPoints)
         {
-            _highScore = _score;
-            OnHighScoreChanged?.Invoke(_highScore);
+            _score += pointsPerAsteroid;
+            OnScoreChanged?.Invoke(_score);
             
-            PlayerPrefs.SetInt("HighScore", _highScore);
-            PlayerPrefs.Save();
+            if (_score > _highScore)
+            {
+                _highScore = _score;
+                OnHighScoreChanged?.Invoke(_highScore);
+                
+                PlayerPrefs.SetInt("HighScore", _highScore);
+                PlayerPrefs.Save();
+            }
         }
         
         // Check if all asteroids are destroyed
