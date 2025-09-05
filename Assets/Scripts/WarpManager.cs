@@ -16,6 +16,11 @@ public class WarpManager : Singleton<WarpManager>
     {
         _registeredTransforms.Remove(registered);
     }
+    
+    public void ClearTransforms()
+    {
+        _registeredTransforms.Clear();
+    }
 
     private void Update()
     {

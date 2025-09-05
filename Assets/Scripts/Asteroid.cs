@@ -8,7 +8,9 @@ public class Asteroid : MonoBehaviour
     
     private float _startingSpeed;
     private int _level;
-    
+    private bool _isDestroyed;
+    public bool IsDestroyed => _isDestroyed;
+
     public void Setup(Sprite sprite, float startingSpeed, int level)
     {
         spriteRenderer.sprite = sprite;
@@ -35,6 +37,7 @@ public class Asteroid : MonoBehaviour
         }
         else if (isBullet)
         {
+            _isDestroyed = true;
             var bullet = other.GetComponent<Bullet>();
             if (bullet != null)
             {

@@ -28,14 +28,14 @@ public class PlayerController : Singleton<PlayerController>
 
     private void Update()
     {
-        // Handle restart input when game is over
-        if (GameManager.Instance.GameOver && Input.GetKeyDown(KeyCode.R))
+        // Handle restart input when game is over or won
+        if ((GameManager.Instance.GameOver || GameManager.Instance.GameWon) && Input.GetKeyDown(KeyCode.R))
         {
             GameManager.Instance.RestartGame();
             return;
         }
         
-        if (!GameManager.Instance.PlayerAlive || GameManager.Instance.GameOver || !GameManager.Instance.GameStarted)
+        if (!GameManager.Instance.PlayerAlive || GameManager.Instance.GameOver || GameManager.Instance.GameWon || !GameManager.Instance.GameStarted)
             return;
             
         HandleThrust();
@@ -90,7 +90,7 @@ public class PlayerController : Singleton<PlayerController>
 
     private void FixedUpdate()
     {
-        if (!GameManager.Instance.PlayerAlive || GameManager.Instance.GameOver || !GameManager.Instance.GameStarted)
+        if (!GameManager.Instance.PlayerAlive || GameManager.Instance.GameOver || GameManager.Instance.GameWon || !GameManager.Instance.GameStarted)
             return;
             
         if (_throttle)

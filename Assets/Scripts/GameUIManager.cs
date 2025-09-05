@@ -27,6 +27,7 @@ public class GameUIManager : MonoBehaviour
         GameManager.Instance.OnPlayerDied += OnPlayerDied;
         GameManager.Instance.OnPlayerRespawned += OnPlayerRespawned;
         GameManager.Instance.OnGameStarted += OnGameStarted;
+        GameManager.Instance.OnGameWon += OnGameWon;
         
         // Initialize UI
         UpdateScoreDisplay(GameManager.Instance.Score);
@@ -48,11 +49,12 @@ public class GameUIManager : MonoBehaviour
         GameManager.Instance.OnPlayerDied -= OnPlayerDied;
         GameManager.Instance.OnPlayerRespawned -= OnPlayerRespawned;
         GameManager.Instance.OnGameStarted -= OnGameStarted;
+        GameManager.Instance.OnGameWon -= OnGameWon;
     }
     
     private void OnStartButtonClicked()
     {
-        if (GameManager.Instance.GameOver)
+        if (GameManager.Instance.GameOver || GameManager.Instance.GameWon)
         {
             GameManager.Instance.RestartGame();
         }
@@ -96,6 +98,12 @@ public class GameUIManager : MonoBehaviour
     private void OnGameStarted()
     {
         UpdateStatusText("");
+        UpdateStartButton();
+    }
+    
+    private void OnGameWon()
+    {
+        UpdateStatusText("YOU WIN!");
         UpdateStartButton();
     }
     
@@ -157,6 +165,13 @@ public class GameUIManager : MonoBehaviour
             startButton.gameObject.SetActive(true);
             if (buttonText != null)
                 buttonText.text = "RETRY";
+        }
+        else if (GameManager.Instance.GameWon)
+        {
+            // Player won, show play again
+            startButton.gameObject.SetActive(true);
+            if (buttonText != null)
+                buttonText.text = "PLAY AGAIN";
         }
         else
         {
