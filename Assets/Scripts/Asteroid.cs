@@ -37,6 +37,7 @@ public class Asteroid : MonoBehaviour
             _isDestroyed = true;
             GameManager.Instance.OnShipHit();
             GameManager.Instance.OnAsteroidDestroyed(false); // No points for ship collision
+            SpawnChildAsteroids(other.transform.position);
             DestroyAsteroid();
         }
         else if (isBullet)
@@ -49,8 +50,14 @@ public class Asteroid : MonoBehaviour
             }
             
             GameManager.Instance.OnAsteroidDestroyed(true); // Award points for bullet hit
+            SpawnChildAsteroids(other.transform.position);
             DestroyAsteroid();
         }
+    }
+    
+    private void SpawnChildAsteroids(Vector3 impactPosition)
+    {
+        AsteroidsFactory.Instance.SpawnChildAsteroids(_level, transform.position, impactPosition);
     }
     
     private void DestroyAsteroid()

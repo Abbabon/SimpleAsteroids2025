@@ -130,7 +130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rigidbody: {fileID: 4187049552416010010}
-  speed: 1200
+  speed: 1600
   timeout: 2
 --- !u!58 &2144451252492664208
 CircleCollider2D:

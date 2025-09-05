@@ -19,18 +19,18 @@ MonoBehaviour:
     - {fileID: 25227389827607002, guid: d136a2b101f9848f4a1f0b4bdd02bdd3, type: 3}
     - {fileID: -1836664091, guid: d136a2b101f9848f4a1f0b4bdd02bdd3, type: 3}
     - {fileID: 2079331845, guid: d136a2b101f9848f4a1f0b4bdd02bdd3, type: 3}
-    SpawnSpeed: 100
+    SpawnSpeed: 200
   - Level: 2
     Score: 50
     Sprites:
     - {fileID: -1852997473, guid: d136a2b101f9848f4a1f0b4bdd02bdd3, type: 3}
     - {fileID: 1674492342, guid: d136a2b101f9848f4a1f0b4bdd02bdd3, type: 3}
     - {fileID: -132251299, guid: d136a2b101f9848f4a1f0b4bdd02bdd3, type: 3}
-    SpawnSpeed: 150
+    SpawnSpeed: 250
   - Level: 3
     Score: 100
     Sprites:
     - {fileID: 39504320, guid: d136a2b101f9848f4a1f0b4bdd02bdd3, type: 3}
     - {fileID: -2042933934, guid: d136a2b101f9848f4a1f0b4bdd02bdd3, type: 3}
     - {fileID: -488895751, guid: d136a2b101f9848f4a1f0b4bdd02bdd3, type: 3}
-    SpawnSpeed: 200
+    SpawnSpeed: 400
