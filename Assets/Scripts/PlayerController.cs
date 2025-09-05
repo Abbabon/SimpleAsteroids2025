@@ -155,5 +155,8 @@ public class PlayerController : Singleton<PlayerController>
         
         // Reactivate ship
         ship.gameObject.SetActive(true);
+        
+        // Re-register with warp manager
+        ship.RegisterWithWarpManager();
     }
 }

@@ -13,6 +13,11 @@ public class Ship : MonoBehaviour
 
         private void Start()
         {
+                RegisterWithWarpManager();
+        }
+        
+        public void RegisterWithWarpManager()
+        {
                 WarpManager.Instance.RegisterTransform(transform);
         }
 

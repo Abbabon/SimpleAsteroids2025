@@ -21,6 +21,7 @@ public class Asteroid : MonoBehaviour
     private void Start()
     {
         WarpManager.Instance.RegisterTransform(transform);
+        GameManager.Instance.RegisterAsteroid(this);
         
         var force = Random.insideUnitCircle.normalized * _startingSpeed;
         rigidbody2D.AddForce(force);
@@ -52,11 +53,16 @@ public class Asteroid : MonoBehaviour
     private void DestroyAsteroid()
     {
         WarpManager.Instance.UnregisterTransform(transform);
+        GameManager.Instance.UnregisterAsteroid(this);
         Destroy(gameObject);
     }
 
     private void OnDestroy()
     {
         WarpManager.Instance.UnregisterTransform(transform);
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.UnregisterAsteroid(this);
+        }
     }
 }

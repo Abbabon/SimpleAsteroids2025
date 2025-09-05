@@ -1,8 +1,6 @@
 using System;
-using System.IO;
-using System.Net;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -17,6 +15,9 @@ public class GameManager : Singleton<GameManager>
     private bool _playerAlive = true;
     private bool _gameStarted;
     private bool _gameWon;
+    
+    private readonly HashSet<AsteroidSpawner> _registeredSpawners = new();
+    private readonly HashSet<Asteroid> _registeredAsteroids = new();
     
     public int Score => _score;
     public int Lives => _lives;
@@ -34,6 +35,26 @@ public class GameManager : Singleton<GameManager>
     public event Action OnPlayerRespawned;
     public event Action OnGameStarted;
     public event Action OnGameWon;
+    
+    public void RegisterSpawner(AsteroidSpawner spawner)
+    {
+        _registeredSpawners.Add(spawner);
+    }
+    
+    public void UnregisterSpawner(AsteroidSpawner spawner)
+    {
+        _registeredSpawners.Remove(spawner);
+    }
+    
+    public void RegisterAsteroid(Asteroid asteroid)
+    {
+        _registeredAsteroids.Add(asteroid);
+    }
+    
+    public void UnregisterAsteroid(Asteroid asteroid)
+    {
+        _registeredAsteroids.Remove(asteroid);
+    }
     
     private void Start()
     {
@@ -62,6 +83,9 @@ public class GameManager : Singleton<GameManager>
         OnLivesChanged?.Invoke(_lives);
         OnGameStarted?.Invoke();
         
+        // Spawn initial asteroids
+        SpawnInitialAsteroids();
+        
         RespawnPlayer();
     }
     
@@ -87,9 +111,7 @@ public class GameManager : Singleton<GameManager>
     
     private void CheckWinCondition()
     {
-        var remainingAsteroids = FindObjectsByType<Asteroid>(FindObjectsSortMode.None);
-
-        foreach (var asteroid in remainingAsteroids)
+        foreach (var asteroid in _registeredAsteroids)
         {
             if (!asteroid.IsDestroyed)
             {
@@ -136,7 +158,54 @@ public class GameManager : Singleton<GameManager>
     
     public void RestartGame()
     {
+        // Clear warp manager transforms
         WarpManager.Instance.ClearTransforms();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        
+        // Destroy all active asteroids
+        var asteroidsToDestroy = new List<Asteroid>(_registeredAsteroids);
+        foreach (var asteroid in asteroidsToDestroy)
+        {
+            Destroy(asteroid.gameObject);
+        }
+        
+        // Return all active bullets to the pool
+        var activeBullets = FindObjectsByType<Bullet>(FindObjectsSortMode.None);
+        foreach (var bullet in activeBullets)
+        {
+            if (bullet.gameObject.activeInHierarchy)
+            {
+                PlayerController.Instance.ReturnBullet(bullet);
+            }
+        }
+        
+        // Cancel any pending respawn
+        CancelInvoke(nameof(RespawnPlayer));
+        
+        // Reset game state and immediately start the game
+        _gameStarted = true;
+        _gameOver = false;
+        _gameWon = false;
+        _playerAlive = true;
+        _score = 0;
+        _lives = startingLives;
+        
+        // Update UI
+        OnScoreChanged?.Invoke(_score);
+        OnLivesChanged?.Invoke(_lives);
+        OnGameStarted?.Invoke();
+        
+        // Reset and respawn player ship
+        PlayerController.Instance.RespawnShip();
+        
+        // Spawn asteroids manually since we can't rely on Start()
+        SpawnInitialAsteroids();
+    }
+    
+    private void SpawnInitialAsteroids()
+    {
+        foreach (var spawner in _registeredSpawners)
+        {
+            spawner.SpawnAsteroid();
+        }
     }
 }
