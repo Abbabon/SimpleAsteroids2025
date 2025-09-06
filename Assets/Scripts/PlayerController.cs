@@ -9,21 +9,36 @@ public class PlayerController : Singleton<PlayerController>
     [SerializeField] private Bullet bulletPrefab;
     [SerializeField] private Ship ship;
 
-    private BestObjectPool<Bullet> bulletPool;
+    [Header("MobileControls")]
+    [SerializeField] private RectTransform mobileControlsContainer;
+    [SerializeField] private MobileButton leftButton;
+    [SerializeField] private MobileButton rightButton;
+    [SerializeField] private MobileButton aButton;
+    [SerializeField] private MobileButton bButton;
+    
+    private BestObjectPool<Bullet> _bulletPool;
     
     private bool _throttle;
     private Vector3 _rotationDirection;
     private Vector3 _originalShipScale;
+    
+    // Mobile input state
+    private bool _mobileThrust;
+    private bool _mobileRotateLeft;
+    private bool _mobileRotateRight;
+    private bool _mobileFire;
 
     private void Awake()
     {
-        bulletPool = new BestObjectPool<Bullet>(bulletPrefab);
+        _bulletPool = new BestObjectPool<Bullet>(bulletPrefab);
         
         // Cache original ship scale
         if (ship != null)
         {
             _originalShipScale = ship.transform.localScale;
         }
+        
+        SetupMobileControls();
     }
 
     private void Update()
@@ -62,11 +77,14 @@ public class PlayerController : Singleton<PlayerController>
 
     private void HandleRotation()
     {
-        if (Input.GetKey(KeyCode.D))
+        bool rotateRight = Input.GetKey(KeyCode.D) || _mobileRotateRight;
+        bool rotateLeft = Input.GetKey(KeyCode.A) || _mobileRotateLeft;
+        
+        if (rotateRight)
         {
             _rotationDirection = new Vector3(0, 0, -1);
         }
-        else if (Input.GetKey(KeyCode.A))
+        else if (rotateLeft)
         {
             _rotationDirection = new Vector3(0, 0, 1);
         }
@@ -78,14 +96,7 @@ public class PlayerController : Singleton<PlayerController>
 
     private void HandleThrust()
     {
-        if (Input.GetKey(KeyCode.W))
-        {
-            _throttle = true;
-        }
-        else
-        {
-            _throttle = false;
-        }
+        _throttle = Input.GetKey(KeyCode.W) || _mobileThrust;
     }
 
     private void FixedUpdate()
@@ -105,22 +116,25 @@ public class PlayerController : Singleton<PlayerController>
     
     private void HandleBullets()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) || _mobileFire)
         {
-            var newBullet = bulletPool.GetObject();
+            var newBullet = _bulletPool.GetObject();
             newBullet.transform.position = ship.transform.position;
             var bulletDirection = ship.transform.up;
-            newBullet.Fire(bulletDirection);   
+            newBullet.Fire(bulletDirection);
+            
+            // Reset mobile fire state (single shot)
+            _mobileFire = false;
         }
     }
     
     public void ReturnBullet(Bullet bullet)
     {
-        // TODO extension methods
+        bullet.MarkAsReturned();
         bullet.Rigidbody.linearVelocity = Vector2.zero;
         bullet.Rigidbody.angularVelocity = 0f;
         
-        bulletPool.ReleaseObject(bullet);
+        _bulletPool.ReleaseObject(bullet);
     }
     
     public void DestroyShip()
@@ -136,6 +150,7 @@ public class PlayerController : Singleton<PlayerController>
         // Reset input state
         _throttle = false;
         _rotationDirection = Vector3.zero;
+        ResetMobileInputState();
     }
     
     public void RespawnShip()
@@ -152,11 +167,64 @@ public class PlayerController : Singleton<PlayerController>
         // Reset input state
         _throttle = false;
         _rotationDirection = Vector3.zero;
+        ResetMobileInputState();
         
         // Reactivate ship
         ship.gameObject.SetActive(true);
         
         // Re-register with warp manager
         ship.RegisterWithWarpManager();
+    }
+    
+    private void SetupMobileControls()
+    {
+#if UNITY_ANDROID || UNITY_IOS
+        if (mobileControlsContainer != null)
+        {
+            mobileControlsContainer.gameObject.SetActive(true);
+            SetupButtonEvents();
+        }
+#else
+        if (mobileControlsContainer != null)
+        {
+            mobileControlsContainer.gameObject.SetActive(false);
+        }
+#endif
+    }
+    
+    private void SetupButtonEvents()
+    {
+#if UNITY_ANDROID || UNITY_IOS
+        if (leftButton != null)
+        {
+            leftButton.OnPressed += () => _mobileRotateLeft = true;
+            leftButton.OnReleased += () => _mobileRotateLeft = false;
+        }
+        
+        if (rightButton != null)
+        {
+            rightButton.OnPressed += () => _mobileRotateRight = true;
+            rightButton.OnReleased += () => _mobileRotateRight = false;
+        }
+        
+        if (aButton != null)
+        {
+            aButton.OnPressed += () => _mobileThrust = true;
+            aButton.OnReleased += () => _mobileThrust = false;
+        }
+        
+        if (bButton != null)
+        {
+            bButton.OnPressed += () => _mobileFire = true;
+        }
+#endif
+    }
+    
+    private void ResetMobileInputState()
+    {
+        _mobileThrust = false;
+        _mobileRotateLeft = false;
+        _mobileRotateRight = false;
+        _mobileFire = false;
     }
 }

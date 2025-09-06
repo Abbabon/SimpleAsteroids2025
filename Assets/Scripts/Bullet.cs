@@ -8,6 +8,8 @@ public class Bullet : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private float timeout = 4f;
     
+    private bool _isReturned;
+    
     public Rigidbody2D Rigidbody => rigidbody;
     
     private void Start()
@@ -17,6 +19,7 @@ public class Bullet : MonoBehaviour
     
     public void Fire(Vector2 direction)
     {
+        _isReturned = false;
         var force = direction.normalized * speed;
         rigidbody.AddForce(force);
 
@@ -26,7 +29,15 @@ public class Bullet : MonoBehaviour
     private IEnumerator Timeout()
     {
         yield return new WaitForSeconds(timeout);
-        PlayerController.Instance.ReturnBullet(this);
+        if (!_isReturned)
+        {
+            PlayerController.Instance.ReturnBullet(this);
+        }
+    }
+    
+    public void MarkAsReturned()
+    {
+        _isReturned = true;
     }
     
     private void OnDestroy()
