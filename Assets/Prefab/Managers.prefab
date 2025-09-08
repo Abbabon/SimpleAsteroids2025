@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6415899828988968918
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1007931944201873988}
+  - component: {fileID: 4909719870208380328}
+  - component: {fileID: 6936311819102831967}
+  - component: {fileID: 4478327937261101609}
+  - component: {fileID: 6180628116416359004}
+  m_Layer: 0
+  m_Name: Managers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1007931944201873988
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6415899828988968918}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4.3929667, y: -3.244793, z: -0.098655835}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4909719870208380328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6415899828988968918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 806b7708dd331408490cd158b56bebce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thrustSpeed: 30
+  rotationSpeed: 100
+  bulletPrefab: {fileID: 913071839044170632, guid: 229629be2a92f4235b94191a35b2392b, type: 3}
+  ship: {fileID: 0}
+  mobileControlsContainer: {fileID: 0}
+  leftButton: {fileID: 0}
+  rightButton: {fileID: 0}
+  aButton: {fileID: 0}
+  bButton: {fileID: 0}
+--- !u!114 &6936311819102831967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6415899828988968918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f12e5c67f65cf4a809519c59efa6fc0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainCamera: {fileID: 0}
+--- !u!114 &4478327937261101609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6415899828988968918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f5c07cd4414a4e33ba622e455a96f97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startButton: {fileID: 0}
+  livesParentElement: {fileID: 0}
+  livesPrefab: {fileID: 7540822372683020950, guid: 244203872f5154654a312bdd69275499, type: 3}
+  scoreText: {fileID: 0}
+  hiScoreText: {fileID: 0}
+  statusText: {fileID: 0}
+--- !u!114 &6180628116416359004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6415899828988968918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e0d7d36f048481492c07c82d42a3dcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  asteroidPrefab: {fileID: 3954780978311459691, guid: 4fa846ffafefc4c6c951332efc49f084, type: 3}
+  asteroidsConfig: {fileID: 11400000, guid: 6d278fb0bcbbb4d8aafdb3ae3674477d, type: 2}
