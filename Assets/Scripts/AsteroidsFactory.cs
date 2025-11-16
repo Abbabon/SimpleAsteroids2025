@@ -9,11 +9,16 @@ public class AsteroidsFactory : Singleton<AsteroidsFactory>
     {
         var asteroid = Instantiate(asteroidPrefab, position, Quaternion.identity);
         var config = asteroidsConfig.GetConfigForLevel(level);
-        
+
         if (config != null)
         {
             var sprite = config.Sprites[Random.Range(0, config.Sprites.Count)];
             asteroid.Setup(sprite, config.SpawnSpeed, level);
+
+            if (level == 1)
+            {
+                asteroid.transform.localScale *= 1.5f;
+            }
         }
         else
         {
