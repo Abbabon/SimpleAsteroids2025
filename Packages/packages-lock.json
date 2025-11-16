@@ -1,5 +1,14 @@
 {
   "dependencies": {
+    "com.mezookan.unity-mcp-sharp": {
+      "version": "0.3.2",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "3.2.1"
+      },
+      "url": "https://package.openupm.com"
+    },
     "com.unity.2d.animation": {
       "version": "10.2.1",
       "depth": 1,
@@ -14,7 +23,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.2d.aseprite": {
-      "version": "1.1.9",
+      "version": "1.1.10",
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -46,7 +55,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.2d.psdimporter": {
-      "version": "9.1.0",
+      "version": "9.1.1",
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -134,12 +143,12 @@
       "dependencies": {
         "com.unity.2d.animation": "10.2.1",
         "com.unity.2d.pixel-perfect": "5.0.3",
-        "com.unity.2d.psdimporter": "9.1.0",
+        "com.unity.2d.psdimporter": "9.1.1",
         "com.unity.2d.sprite": "1.0.0",
         "com.unity.2d.spriteshape": "10.0.7",
         "com.unity.2d.tilemap": "1.0.0",
         "com.unity.2d.tilemap.extras": "4.1.0",
-        "com.unity.2d.aseprite": "1.1.9"
+        "com.unity.2d.aseprite": "1.1.10"
       }
     },
     "com.unity.ide.rider": {
@@ -187,6 +196,13 @@
     "com.unity.nuget.mono-cecil": {
       "version": "1.11.4",
       "depth": 3,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.nuget.newtonsoft-json": {
+      "version": "3.2.1",
+      "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
