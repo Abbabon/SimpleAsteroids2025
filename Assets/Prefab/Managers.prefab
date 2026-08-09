@@ -49,13 +49,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   thrustSpeed: 30
   rotationSpeed: 100
-  bulletPrefab: {fileID: 913071839044170632, guid: 229629be2a92f4235b94191a35b2392b, type: 3}
+  bulletPrefab: {fileID: 913071839044170632, guid: 229629be2a92f4235b94191a35b2392b,
+    type: 3}
   ship: {fileID: 0}
   mobileControlsContainer: {fileID: 0}
-  leftButton: {fileID: 0}
-  rightButton: {fileID: 0}
-  aButton: {fileID: 0}
-  bButton: {fileID: 0}
 --- !u!114 &6936311819102831967
 MonoBehaviour:
   m_ObjectHideFlags: 0
